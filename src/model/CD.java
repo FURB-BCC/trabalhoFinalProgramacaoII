@@ -7,7 +7,7 @@ public class CD {
 	private Double preco;
 	private String loja;
 	
-	public CD(String titulo, String artista, Double preco, String loja) {
+	public CD(String artista, String titulo, Double preco, String loja) {
 		this.titulo = titulo;
 		this.artista = artista;
 		this.preco = preco;

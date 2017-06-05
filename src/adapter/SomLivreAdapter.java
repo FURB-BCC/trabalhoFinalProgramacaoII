@@ -1,10 +1,10 @@
 package adapter;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import conexao.SomLivreServidor;
+import model.CD;
 import model.Loja;
 
 public class SomLivreAdapter extends SomLivreServidor implements Loja{
@@ -16,15 +16,23 @@ public class SomLivreAdapter extends SomLivreServidor implements Loja{
 
 	@Override
 	public void desconectar() {
-//		null ou "" desconecta;
 		registrar(null);
-		
 	}
 
 	@Override
 	public Collection procurar(String chave) {
-		List<String> listaCD = Arrays.asList(buscaCD());  
-		return listaCD;
+		
+		conectar("","");
+		
+		String[] listaCD = buscaCD();  
+		ArrayList<CD> lista = new ArrayList<CD>();
+		
+		for (String string : listaCD) {
+			String[] content = string.split("\\|");
+			lista.add(new CD(content[1], content[0], Double.parseDouble(content[2]), "SomLivre"));
+		}
+		
+		return lista;
 	}
 
 }

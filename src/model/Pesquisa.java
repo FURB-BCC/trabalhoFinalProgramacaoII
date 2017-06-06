@@ -3,35 +3,39 @@ package model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 
-public class Pesquisa implements Serializable{
+public class Pesquisa implements Serializable {
 
 	private String data;
 	private String key;
 	private Collection<CD> cds;
-	
-	public Pesquisa(String data, String key, Collection<CD> cds) {		
+
+	public Pesquisa(String data, String key, Collection<CD> cds) {
 		this.data = data;
 		this.key = key;
 		this.cds = cds;
 	}
-	
+
 	public String getData() {
 		return data;
 	}
+
 	public void setData(String data) {
 		this.data = data;
 	}
+
 	public String getKey() {
 		return key;
 	}
+
 	public void setKey(String key) {
 		this.key = key;
 	}
+
 	public Collection<CD> getCds() {
 		return cds;
 	}
+
 	public void setCds(ArrayList<CD> cds) {
 		this.cds = cds;
 	}

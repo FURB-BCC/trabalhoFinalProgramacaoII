@@ -1,6 +1,5 @@
 package adapter;
 
-import java.awt.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -19,7 +18,7 @@ public class SubmarinoAdapter implements Loja {
 		try {
 			sP.connect("furb", "furb");
 		} catch (Exception e) {
-			e.printStackTrace();
+			return false;
 		}
 		return sP.isConnected();
 	}
@@ -31,6 +30,7 @@ public class SubmarinoAdapter implements Loja {
 
 	@Override
 	public Collection procurar(String chave) {
+		
 		if (!sP.isConnected()) {
 			conectar("furb", "furb");
 		}
@@ -52,14 +52,20 @@ public class SubmarinoAdapter implements Loja {
 			values[3] = matriz[linha][3];
 			listaCDs.add(new CD(values[0], values[2], Double.parseDouble(values[3]), "Submarino"));
 		}
-		Set<String> artistas = listaCDs.stream().map(CD::getArtista).filter(a -> a.equals(chave))
-				.collect(Collectors.toSet());
+		
+		Set<String> artistas = listaCDs.stream()
+									    .map(CD::getArtista)
+									    .filter(a -> a.equalsIgnoreCase(chave))
+									    .collect(Collectors.toSet());
 
-		Set<String> albuns = listaCDs.stream().map(CD::getTitulo).filter(a -> a.equals(chave))
-				.collect(Collectors.toSet());
+		Set<String> albuns = listaCDs.stream()
+									  .map(CD::getTitulo)
+									  .filter(a -> a.equalsIgnoreCase(chave))
+									  .collect(Collectors.toSet());
 
-		return listaCDs.stream().filter(c -> artistas.contains(c.getArtista()) | albuns.contains(c.getTitulo()))
-				.collect(Collectors.toList());
+		return listaCDs.stream()
+						.filter(c -> artistas.contains(c.getArtista()) | albuns.contains(c.getTitulo()))
+						.collect(Collectors.toList());
 
 	}
 

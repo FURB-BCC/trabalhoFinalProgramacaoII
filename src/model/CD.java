@@ -2,13 +2,13 @@ package model;
 
 import java.io.Serializable;
 
-public class CD implements Serializable{
-	
+public class CD implements Serializable {
+
 	private String titulo;
 	private String artista;
 	private Double preco;
 	private String loja;
-	
+
 	public CD(String artista, String titulo, Double preco, String loja) {
 		this.titulo = titulo;
 		this.artista = artista;
@@ -47,10 +47,9 @@ public class CD implements Serializable{
 	public void setLoja(String loja) {
 		this.loja = loja;
 	}
-	
+
 	@Override
 	public String toString() {
-		
 		return this.artista + " - " + this.loja + " - " + this.titulo + " - " + this.preco;
 	}
 
@@ -96,7 +95,5 @@ public class CD implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
 
 }

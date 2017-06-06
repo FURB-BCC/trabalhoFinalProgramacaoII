@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import conexao.SomLivreServidor;
 import model.CD;
 import model.Loja;
@@ -34,17 +33,16 @@ public class SomLivreAdapter extends SomLivreServidor implements Loja{
 		
 		Set<String> artistas = lista.stream()
 								    .map(CD::getArtista)
-								    .filter(a -> a.equals(chave))
+								    .filter(a -> a.equalsIgnoreCase(chave))
 								    .collect(Collectors.toSet());
 		
 		Set<String> albuns = lista.stream()
 								  .map(CD::getTitulo)
-								  .filter(a -> a.equals(chave))
+								  .filter(a -> a.equalsIgnoreCase(chave))
 								  .collect(Collectors.toSet());
 		
 		return lista.stream()
-					.filter(c -> artistas.contains(c.getArtista()) |
-							     albuns.contains(c.getTitulo()))
+					.filter(c -> artistas.contains(c.getArtista()) | albuns.contains(c.getTitulo()))
 					.collect(Collectors.toList());
 							     
 		

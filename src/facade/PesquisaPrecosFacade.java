@@ -1,8 +1,11 @@
-package adapter;
+package facade;
 
 import java.util.ArrayList;
 
+import adapter.SomLivreAdapter;
+import adapter.SubmarinoAdapter;
 import model.CD;
+import model.ConnectionRefusedException;
 
 public class PesquisaPrecosFacade {
 	

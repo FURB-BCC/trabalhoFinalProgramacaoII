@@ -1,4 +1,4 @@
-package adapter;
+package model;
 
 public class ConnectionRefusedException extends Exception {
 

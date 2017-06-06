@@ -21,10 +21,13 @@ import model.Pesquisa;
 public class PesquisaPrecosFacade {
 
 	private ArrayList<CD> resultados = new ArrayList<CD>();
-	private SomLivreAdapter somLivreAdapter = new SomLivreAdapter();
-	private SubmarinoAdapter submarinoAdapter = new SubmarinoAdapter();
+	private SomLivreAdapter somLivreAdapter;
+	private SubmarinoAdapter submarinoAdapter; 
 
 	public ArrayList pesquisar(String chave) throws Exception {
+		
+		submarinoAdapter = new SubmarinoAdapter();
+		somLivreAdapter = new SomLivreAdapter();
 		// Connectar, carregar todos os CDs da loja SomLivre e descontectar
 
 		if (somLivreAdapter.conectar("furb", "furb")) {

@@ -137,6 +137,7 @@ public class Tela extends JFrame {
 	}
 
 	private void atualizaTable(ArrayList retorno) {
+		limpaTable();
 		for (Object object : retorno) {
 			CD cd = (CD) object;
 			if(cdsPesquisados != null)
@@ -144,6 +145,10 @@ public class Tela extends JFrame {
 			
 			modeloTabela.addRow(new String[] {cd.getTitulo(), cd.getArtista(),String.valueOf(cd.getPreco()), cd.getLoja()});
 		}
+	}
+	
+	private void limpaTable(){
+		modeloTabela.setRowCount(0);
 	}
 }
 	

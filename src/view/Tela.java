@@ -2,10 +2,13 @@ package view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.TreeSet;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -18,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 
 import facade.PesquisaPrecosFacade;
 import model.CD;
+import model.Pesquisa;
 
 public class Tela extends JFrame {
 
@@ -29,6 +33,7 @@ public class Tela extends JFrame {
 	private DefaultTableModel modeloTabela;
 	private PesquisaPrecosFacade pesquisaFacade;
 	private ArrayList<CD> cdsPesquisados;
+	private JComboBox cbPesquisasAnteriores;
 	// End of variables declaration
 
 	public static void main(String[] args) throws Exception {
@@ -43,7 +48,8 @@ public class Tela extends JFrame {
 
 	private void initComponents() {
 
-		cdsPesquisados = new ArrayList();
+		
+		cdsPesquisados = new ArrayList<>();
 				
 		
 		btnPesquisar = new javax.swing.JButton();
@@ -82,12 +88,13 @@ public class Tela extends JFrame {
 			}
 		});
 		
-		JComboBox comboBox = new JComboBox();
+		cbPesquisasAnteriores = new JComboBox();
 		
-		JButton btnCarregar = new JButton("Carregar");
-		btnCarregar.addActionListener(new ActionListener() {
+		JButton btCarregar = new JButton("Carregar");
+		btCarregar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: Implementar carga de dados do facade
+				insereDadosNaTabela(cbPesquisasAnteriores.getSelectedItem().toString());
 			}
 		});
 
@@ -96,13 +103,13 @@ public class Tela extends JFrame {
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+					.addGroup(layout.createParallelGroup(Alignment.TRAILING)
 						.addComponent(jScrollPane, GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
-						.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-							.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
+						.addGroup(layout.createSequentialGroup()
+							.addComponent(cbPesquisasAnteriores, 0, 232, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnCarregar)
-							.addPreferredGap(ComponentPlacement.RELATED, 178, Short.MAX_VALUE)
+							.addComponent(btCarregar)
+							.addGap(68)
 							.addComponent(txtInput, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnPesquisar)
@@ -118,15 +125,44 @@ public class Tela extends JFrame {
 						.addComponent(btnPesquisar)
 						.addComponent(btSalvar)
 						.addComponent(txtInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnCarregar))
+						.addComponent(cbPesquisasAnteriores, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btCarregar))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(jScrollPane, GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		getContentPane().setLayout(layout);
 
+		try{
+			atualizarComboBox();
+		}catch (Exception e) {
+		}
+		
 		pack();
+	}
+
+	protected void insereDadosNaTabela(String selectedItem) {
+		
+		ArrayList<Pesquisa> lista = (ArrayList) pesquisaFacade.ler();
+		
+		for (Pesquisa pesquisa : lista) {
+			if(selectedItem.contains(pesquisa.getKey())){
+				for (CD cd : pesquisa.getCds()) {
+					insereCDNaTabela(cd);
+				}
+			}
+		}
+		
+		
+	}
+
+	private void atualizarComboBox() throws FileNotFoundException, IOException {
+
+		ArrayList<Pesquisa> itens = (ArrayList) pesquisaFacade.ler();
+		
+		for (Pesquisa pesquisa : itens) {
+			cbPesquisasAnteriores.addItem(pesquisa.getKey() + pesquisa.getData());
+		}
 	}
 
 	protected void salvar() throws IOException, ClassNotFoundException {
@@ -137,6 +173,8 @@ public class Tela extends JFrame {
 		String data = dtf.format(now); //2016/11/16 12:08:43
 		
 		pesquisaFacade.salvar(key, cdsPesquisados, data);
+		
+		atualizarComboBox(); 
 		
 	}
 
@@ -153,15 +191,19 @@ public class Tela extends JFrame {
 		limpaTable();
 		for (Object object : retorno) {
 			CD cd = (CD) object;
-			if(cdsPesquisados != null)
-				cdsPesquisados.add(cd);
-			
-			modeloTabela.addRow(new String[] {cd.getTitulo(), cd.getArtista(),String.valueOf(cd.getPreco()), cd.getLoja()});
+			insereCDNaTabela(cd);			
 		}
 	}
 	
 	private void limpaTable(){
 		modeloTabela.setRowCount(0);
+	}
+	
+	private void insereCDNaTabela(CD cd){
+		if(!cdsPesquisados.contains(cd)){
+			modeloTabela.addRow(new String[] {cd.getTitulo(), cd.getArtista(),String.valueOf(cd.getPreco()), cd.getLoja()});
+		}
+		cdsPesquisados.add(cd);
 	}
 }
 	

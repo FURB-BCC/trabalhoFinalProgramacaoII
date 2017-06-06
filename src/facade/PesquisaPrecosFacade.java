@@ -70,13 +70,14 @@ public class PesquisaPrecosFacade {
 
 	}
 
-	public Collection ler() throws FileNotFoundException, IOException {
+	public Collection ler(){
 
+		try{
+			
 		File file = new File("C:\\Temp\\TrabalhoFinalProgramacaoII.log");
 
 		ObjectInputStream input = new ObjectInputStream(new FileInputStream(file));
-
-		try{
+		
 			return (Collection) input.readObject();
 		}catch (Exception e) {
 			return null;

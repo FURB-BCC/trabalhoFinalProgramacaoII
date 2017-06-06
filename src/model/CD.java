@@ -53,6 +53,50 @@ public class CD implements Serializable{
 		
 		return this.artista + " - " + this.loja + " - " + this.titulo + " - " + this.preco;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((artista == null) ? 0 : artista.hashCode());
+		result = prime * result + ((loja == null) ? 0 : loja.hashCode());
+		result = prime * result + ((preco == null) ? 0 : preco.hashCode());
+		result = prime * result + ((titulo == null) ? 0 : titulo.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CD other = (CD) obj;
+		if (artista == null) {
+			if (other.artista != null)
+				return false;
+		} else if (!artista.equals(other.artista))
+			return false;
+		if (loja == null) {
+			if (other.loja != null)
+				return false;
+		} else if (!loja.equals(other.loja))
+			return false;
+		if (preco == null) {
+			if (other.preco != null)
+				return false;
+		} else if (!preco.equals(other.preco))
+			return false;
+		if (titulo == null) {
+			if (other.titulo != null)
+				return false;
+		} else if (!titulo.equals(other.titulo))
+			return false;
+		return true;
+	}
+	
 	
 
 }

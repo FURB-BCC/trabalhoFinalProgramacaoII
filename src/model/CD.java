@@ -1,6 +1,8 @@
 package model;
 
-public class CD {
+import java.io.Serializable;
+
+public class CD implements Serializable{
 	
 	private String titulo;
 	private String artista;

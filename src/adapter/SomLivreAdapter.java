@@ -2,6 +2,8 @@ package adapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import conexao.SomLivreServidor;
 import model.CD;
@@ -22,17 +24,30 @@ public class SomLivreAdapter extends SomLivreServidor implements Loja{
 	@Override
 	public Collection procurar(String chave) {
 		
-		conectar("","");
-		
 		String[] listaCD = buscaCD();  
-		ArrayList<CD> lista = new ArrayList<CD>();
-		
+		ArrayList<CD> lista = new ArrayList<CD>();		
+
 		for (String string : listaCD) {
 			String[] content = string.split("\\|");
 			lista.add(new CD(content[1], content[0], Double.parseDouble(content[2]), "SomLivre"));
 		}
 		
-		return lista;
+		Set<String> artistas = lista.stream()
+								    .map(CD::getArtista)
+								    .filter(a -> a.equals(chave))
+								    .collect(Collectors.toSet());
+		
+		Set<String> albuns = lista.stream()
+								  .map(CD::getTitulo)
+								  .filter(a -> a.equals(chave))
+								  .collect(Collectors.toSet());
+		
+		return lista.stream()
+					.filter(c -> artistas.contains(c.getArtista()) |
+							     albuns.contains(c.getTitulo()))
+					.collect(Collectors.toList());
+							     
+		
 	}
 
 }

@@ -46,7 +46,11 @@ public class CD {
 		this.loja = loja;
 	}
 	
-	
+	@Override
+	public String toString() {
+		
+		return this.artista + " - " + this.loja + " - " + this.titulo + " - " + this.preco;
+	}
 	
 
 }

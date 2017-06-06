@@ -22,7 +22,6 @@ import model.Pesquisa;
 public class Tela extends JFrame {
 
 
-    private javax.swing.JButton btnPesquisar;
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JTable jTable;
     private javax.swing.JTextField txtInput;
@@ -36,7 +35,7 @@ public class Tela extends JFrame {
         new Tela();
     }
 
-    Tela() {
+    private Tela() {
         pesquisaFacade = new PesquisaPrecosFacade();
         initComponents();
         setVisible(true);
@@ -48,14 +47,12 @@ public class Tela extends JFrame {
         cdsPesquisados = new ArrayList<>();
 
 
-        btnPesquisar = new javax.swing.JButton();
-        btnPesquisar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                try{
-                    pesquisar();
-                }catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Erro! " + e.getMessage());
-                }
+        JButton btnPesquisar = new JButton();
+        btnPesquisar.addActionListener(arg0 -> {
+            try{
+                pesquisar();
+            }catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Erro! " + e.getMessage());
             }
         });
         txtInput = new javax.swing.JTextField();
@@ -74,24 +71,18 @@ public class Tela extends JFrame {
         jScrollPane.setViewportView(jTable);
 
         JButton btSalvar = new JButton("Salvar");
-        btSalvar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                try{
-                    salvar();
-                }catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Erro! " + e.getMessage());
-                }
+        btSalvar.addActionListener(arg0 -> {
+            try{
+                salvar();
+            }catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Erro! " + e.getMessage());
             }
         });
 
         cbPesquisasAnteriores = new JComboBox();
 
         JButton btCarregar = new JButton("Carregar");
-        btCarregar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                insereDadosNaTabela(cbPesquisasAnteriores.getSelectedItem().toString());
-            }
-        });
+        btCarregar.addActionListener(e -> insereDadosNaTabela(cbPesquisasAnteriores.getSelectedItem().toString()));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         layout.setHorizontalGroup(
@@ -130,13 +121,15 @@ public class Tela extends JFrame {
 
         try{
             atualizarComboBox();
-        }catch (Exception e) {
+        }catch (Exception e1) {
+            System.out.println(e1.getMessage());
         }
 
         pack();
     }
 
-    protected void insereDadosNaTabela(String selectedItem) {
+    private void insereDadosNaTabela(String selectedItem) {
+
 
         ArrayList<Pesquisa> lista = (ArrayList) pesquisaFacade.ler();
 
@@ -158,7 +151,7 @@ public class Tela extends JFrame {
         }
     }
 
-    protected void salvar() throws IOException, ClassNotFoundException {
+    private void salvar() throws IOException, ClassNotFoundException {
         String key = JOptionPane.showInputDialog("Informe a chave de salvamento");
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
@@ -171,7 +164,7 @@ public class Tela extends JFrame {
 
     }
 
-    protected void pesquisar() throws Exception {
+    private void pesquisar() throws Exception {
         String parametroPesquisa = txtInput.getText();
         limpaTable();
         ArrayList retorno = pesquisaFacade.pesquisar(parametroPesquisa);

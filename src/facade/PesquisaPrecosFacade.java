@@ -17,14 +17,12 @@ import model.Pesquisa;
 
 public class PesquisaPrecosFacade {
 
-	private ArrayList<CD> resultados = new ArrayList<CD>();
-	private SomLivreAdapter somLivreAdapter;
-	private SubmarinoAdapter submarinoAdapter;
+	private ArrayList<CD> resultados = new ArrayList<>();
 
-	public ArrayList pesquisar(String chave) throws Exception {
+	public ArrayList<CD> pesquisar(String chave) throws Exception {
 
-		submarinoAdapter = new SubmarinoAdapter();
-		somLivreAdapter = new SomLivreAdapter();
+		SubmarinoAdapter submarinoAdapter = new SubmarinoAdapter();
+		SomLivreAdapter somLivreAdapter = new SomLivreAdapter();
 		// Connectar, carregar todos os CDs da loja SomLivre e descontectar
 
 		if (somLivreAdapter.conectar("furb", "furb")) {
@@ -48,8 +46,8 @@ public class PesquisaPrecosFacade {
 		return resultados;
 	}
 
-	public void salvar(String key, Collection cdsPesquisados, String data)
-			throws FileNotFoundException, IOException, ClassNotFoundException {
+	public void salvar(String key, Collection<CD> cdsPesquisados, String data)
+			throws IOException, ClassNotFoundException {
 
 		File file = new File("C:\\Temp\\TrabalhoFinalProgramacaoII.log");
 
@@ -68,12 +66,12 @@ public class PesquisaPrecosFacade {
 
 	}
 
-	public Collection ler() {
+	public ArrayList<Pesquisa> ler() {
 
 		try {
 			File file = new File("C:\\Temp\\TrabalhoFinalProgramacaoII.log");
 			ObjectInputStream input = new ObjectInputStream(new FileInputStream(file));
-			return (Collection) input.readObject();
+			return (ArrayList<Pesquisa>) input.readObject();
 		} catch (Exception e) {
 			return null;
 		}

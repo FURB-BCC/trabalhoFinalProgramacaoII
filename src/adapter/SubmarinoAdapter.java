@@ -45,11 +45,11 @@ public class SubmarinoAdapter implements Loja {
 
 		String[] values = new String[4];
 
-		for (int linha = 0; linha < matriz.length; linha++) {
-			values[0] = matriz[linha][0];
-			values[1] = matriz[linha][1];
-			values[2] = matriz[linha][2];
-			values[3] = matriz[linha][3];
+		for (String[] aMatriz : matriz) {
+			values[0] = aMatriz[0];
+			values[1] = aMatriz[1];
+			values[2] = aMatriz[2];
+			values[3] = aMatriz[3];
 			listaCDs.add(new CD(values[0], values[2], Double.parseDouble(values[3]), "Submarino"));
 		}
 		

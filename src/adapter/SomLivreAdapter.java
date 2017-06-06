@@ -24,7 +24,7 @@ public class SomLivreAdapter extends SomLivreServidor implements Loja{
 	public Collection procurar(String chave) {
 		
 		String[] listaCD = buscaCD();  
-		ArrayList<CD> lista = new ArrayList<CD>();		
+		ArrayList<CD> lista = new ArrayList<>();
 
 		for (String string : listaCD) {
 			String[] content = string.split("\\|");

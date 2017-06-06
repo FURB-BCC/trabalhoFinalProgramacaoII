@@ -45,8 +45,9 @@ public class Tela extends JFrame {
 
 	private void initComponents() {
 
-		//cdsPesquisados = (ArrayList<CD>) pesquisaFacade.ler();
-		cdsPesquisados = new ArrayList<>();
+		cdsPesquisados = new ArrayList();
+				
+		
 		btnPesquisar = new javax.swing.JButton();
 		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -67,8 +68,7 @@ public class Tela extends JFrame {
 
 		jTable.setModel(
 				modeloTabela = new javax.swing.table.DefaultTableModel(
-						new Object[][] { { null, null, null, null }, { null, null, null, null },
-								{ null, null, null, null }, { null, null, null, null } },
+						new Object[][]{},
 						new String[] { "Titulo", "Banda/Artista", "Preço", "Loja" }));
 
 		jScrollPane.setViewportView(jTable);
@@ -116,7 +116,7 @@ public class Tela extends JFrame {
 		pack();
 	}
 
-	protected void salvar() throws IOException {
+	protected void salvar() throws IOException, ClassNotFoundException {
 		String key = JOptionPane.showInputDialog("Informe a chave de salvamento");
 		
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
@@ -132,13 +132,18 @@ public class Tela extends JFrame {
 		
 		ArrayList retorno = pesquisaFacade.pesquisar(parametroPesquisa);
 		
+		atualizaTable(retorno);
+		
+	}
+
+	private void atualizaTable(ArrayList retorno) {
 		for (Object object : retorno) {
 			CD cd = (CD) object;
 			if(cdsPesquisados != null)
 				cdsPesquisados.add(cd);
+			
 			modeloTabela.addRow(new String[] {cd.getTitulo(), cd.getArtista(),String.valueOf(cd.getPreco()), cd.getLoja()});
 		}
-		
 	}
 }
 	

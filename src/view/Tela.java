@@ -161,12 +161,7 @@ public class Tela extends JFrame {
 	}
 
 	private void limpaTable() {
-		int x = modeloTabela.getRowCount();
-		while (x > 0) {
-			x--;
-			modeloTabela.removeRow(0);
-		}
-
+		modeloTabela.setRowCount(0);
 	}
 
 	private void insereCDNaTabela(CD cd) {

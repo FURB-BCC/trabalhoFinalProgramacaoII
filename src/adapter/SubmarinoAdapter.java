@@ -55,12 +55,12 @@ public class SubmarinoAdapter implements Loja {
 		
 		Set<String> artistas = listaCDs.stream()
 									    .map(CD::getArtista)
-									    .filter(a -> a.contains(chave))
+									    .filter(a -> a.toLowerCase().contains(chave.toLowerCase()))
 									    .collect(Collectors.toSet());
 
 		Set<String> albuns = listaCDs.stream()
 									  .map(CD::getTitulo)
-									  .filter(a -> a.contains(chave))
+									  .filter(a -> a.toLowerCase().contains(chave.toLowerCase()))
 									  .collect(Collectors.toSet());
 
 		return listaCDs.stream()

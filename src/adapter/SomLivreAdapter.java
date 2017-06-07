@@ -33,12 +33,12 @@ public class SomLivreAdapter extends SomLivreServidor implements Loja{
 		
 		Set<String> artistas = lista.stream()
 								    .map(CD::getArtista)
-								    .filter(a -> a.contains(chave))
+								    .filter(a -> a.toLowerCase().contains(chave.toLowerCase()))
 								    .collect(Collectors.toSet());
 		
 		Set<String> albuns = lista.stream()
 								  .map(CD::getTitulo)
-								  .filter(a -> a.contains(chave))
+								  .filter(a -> a.toLowerCase().contains(chave.toLowerCase()))
 								  .collect(Collectors.toSet());
 		
 		return lista.stream()

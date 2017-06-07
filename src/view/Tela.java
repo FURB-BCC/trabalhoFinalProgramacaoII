@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -119,9 +120,8 @@ public class Tela extends JFrame {
 		
 		limpaTable();
 		
-		for (CD cd : lista) {
-			insereCDNaTabela(cd);
-		}
+
+		atualizaTable(lista);
 	}
 
 	private void atualizarComboBox() throws FileNotFoundException, IOException {
@@ -167,6 +167,7 @@ public class Tela extends JFrame {
 
 	private void atualizaTable(ArrayList retorno) {
 
+		Collections.sort(retorno);
 		for (Object object : retorno) {
 			CD cd = (CD) object;
 			insereCDNaTabela(cd);

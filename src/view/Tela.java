@@ -106,7 +106,8 @@ public class Tela extends JFrame {
 		try {
 			atualizarComboBox();
 		} catch (Exception e1) {
-			System.out.println(e1.getMessage());
+			//System.out.println(e1.getMessage());
+			JOptionPane.showMessageDialog(null, e1.getMessage());
 		}
 
 		pack();
@@ -115,23 +116,35 @@ public class Tela extends JFrame {
 	private void insereDadosNaTabela(String selectedItem) {
 
 		ArrayList<CD> lista = (ArrayList) pesquisaFacade.ler(selectedItem);
-
+		
+		limpaTable();
+		
 		for (CD cd : lista) {
-			if (selectedItem.contains(cd.getTitulo())) {
-				insereCDNaTabela(cd);
-			}
+			insereCDNaTabela(cd);
 		}
 	}
 
 	private void atualizarComboBox() throws FileNotFoundException, IOException {
 
 		ArrayList<String> itens = pesquisaFacade.lerChaves();
-
+		ArrayList<String> cbItens = getCbItens();
 		for (String chave : itens) {
-			cbPesquisasAnteriores.addItem(chave);
+			if(!cbItens.contains(chave)){
+				cbPesquisasAnteriores.addItem(chave);
+			}
 		}
 	}
 
+	private ArrayList<String> getCbItens(){
+		
+		ArrayList<String> itens = new ArrayList<>();
+		int size = cbPesquisasAnteriores.getItemCount();
+		for(int i = 0; i < size; i++){
+			itens.add(cbPesquisasAnteriores.getItemAt(i).toString());
+		}
+		return itens;
+		
+	}
 	private void salvar() throws IOException, ClassNotFoundException {
 		String key = JOptionPane.showInputDialog("Informe a chave de salvamento");
 

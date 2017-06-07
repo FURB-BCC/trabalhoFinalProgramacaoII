@@ -62,21 +62,6 @@ public class PesquisaPrecosFacade {
 
 	}
 
-	public ArrayList<CD> ler(String key, String data) {
-
-		File base = new File(PASTA_BASE);
-		if(!base.exists())
-			base.mkdirs();
-		
-		try {
-			File file = new File(PASTA_BASE + key + data);
-			ObjectInputStream input = new ObjectInputStream(new FileInputStream(file));
-			return (ArrayList<CD>) input.readObject();
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	//TODO: REFATORAR REPETICAO
 	public ArrayList<CD> ler(String key) {
 
 		File base = new File(PASTA_BASE);
@@ -92,11 +77,15 @@ public class PesquisaPrecosFacade {
 		}
 	}
 	
-	
+
 	
 	public ArrayList<String> lerChaves(){
 		
-		ArrayList<File> arquivos = listFilesForFolder(new File(PASTA_BASE));
+		File base = new File(PASTA_BASE);
+		
+		base.mkdirs();
+		
+		ArrayList<File> arquivos = listFilesForFolder(base);
 		ArrayList<String> chaves = new ArrayList<>();
 		for (File file : arquivos) {
 			chaves.add(file.getName());

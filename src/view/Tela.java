@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -13,13 +14,18 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import facade.PesquisaPrecosFacade;
+import model.AlbumValorComparator;
 import model.CD;
+import model.NomeBandaValorComparator;
+import model.ValorComparator;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.DefaultComboBoxModel;
 
 public class Tela extends JFrame {
 
@@ -30,7 +36,8 @@ public class Tela extends JFrame {
 	private PesquisaPrecosFacade pesquisaFacade;
 	private ArrayList<CD> cdsPesquisados;
 	private JComboBox cbPesquisasAnteriores;
-
+	private Comparator tipoComparacao;
+	
 	public static void main(String[] args) throws Exception {
 		new Tela();
 	}
@@ -79,29 +86,56 @@ public class Tela extends JFrame {
 
 		JButton btCarregar = new JButton("Carregar");
 		btCarregar.addActionListener(e -> insereDadosNaTabela(cbPesquisasAnteriores.getSelectedItem().toString()));
+		
+		JComboBox cbOrdenacao = new JComboBox();
+		cbOrdenacao.setModel(new DefaultComboBoxModel(new String[] {"Descrescente de valor", "Alfabética pelo nome do álbum e crescente de valor", "Alfabética pelo nome do artista e decrescente de valor"}));
+		cbOrdenacao.setSelectedIndex(0);
+		cbOrdenacao.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					alteraOrdenacao(cbOrdenacao.getSelectedIndex());
+				} catch (Exception e1) {
+				}
+			}
+		});
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
-				.addContainerGap()
-				.addGroup(layout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(jScrollPane, GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE).addGroup(layout
-								.createSequentialGroup().addComponent(cbPesquisasAnteriores, 0, 232, Short.MAX_VALUE)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(btCarregar).addGap(68)
-								.addComponent(txtInput, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnPesquisar)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(btSalvar)))
-				.addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addGroup(layout.createParallelGroup(Alignment.BASELINE).addComponent(btnPesquisar)
-								.addComponent(btSalvar)
-								.addComponent(txtInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(cbPesquisasAnteriores, GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(btCarregar))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(jScrollPane, GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE).addContainerGap()));
+		layout.setHorizontalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(jScrollPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
+						.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+							.addComponent(cbPesquisasAnteriores, 0, 232, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btCarregar)
+							.addGap(68)
+							.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
+								.addComponent(cbOrdenacao, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(txtInput, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnPesquisar)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btSalvar)))
+					.addContainerGap())
+		);
+		layout.setVerticalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnPesquisar)
+						.addComponent(btSalvar)
+						.addComponent(txtInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbPesquisasAnteriores, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btCarregar))
+					.addPreferredGap(ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+					.addComponent(cbOrdenacao, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(jScrollPane, GroupLayout.PREFERRED_SIZE, 344, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
+		);
 		getContentPane().setLayout(layout);
 
 		try {
@@ -114,13 +148,36 @@ public class Tela extends JFrame {
 		pack();
 	}
 
+	protected void alteraOrdenacao(int selectedIndex) throws Exception {
+
+		switch (selectedIndex) {
+		case 0:
+			tipoComparacao = new ValorComparator();
+			break;
+			
+		case 1:
+			//alfabetica pelo nome do album e crescente de valor
+			tipoComparacao = new AlbumValorComparator();
+			break;
+			
+		case 2:
+			//alfabetica pelo nome do artista e decrescente de valor
+			tipoComparacao = new NomeBandaValorComparator();
+			break;
+
+		default:
+			JOptionPane.showMessageDialog(null, "Erro no CB");
+		}
+		
+		pesquisar();
+	}
+
 	private void insereDadosNaTabela(String selectedItem) {
 
 		ArrayList<CD> lista = (ArrayList) pesquisaFacade.ler(selectedItem);
 		
 		limpaTable();
 		
-
 		atualizaTable(lista);
 	}
 
@@ -167,7 +224,9 @@ public class Tela extends JFrame {
 
 	private void atualizaTable(ArrayList retorno) {
 
-		Collections.sort(retorno);
+		
+		Collections.sort(retorno, tipoComparacao ==  null ? new ValorComparator() : tipoComparacao);
+		
 		for (Object object : retorno) {
 			CD cd = (CD) object;
 			insereCDNaTabela(cd);

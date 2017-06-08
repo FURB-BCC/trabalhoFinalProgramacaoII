@@ -3,7 +3,7 @@ package model;
 import java.io.Serializable;
 
 
-public class CD implements Serializable, Comparable {
+public class CD implements Serializable{
 
 	private String titulo;
 	private String artista;
@@ -53,13 +53,6 @@ public class CD implements Serializable, Comparable {
 	public String toString() {
 		return this.artista + " - " + this.loja + " - " + this.titulo + " - " + this.preco;
 	}
-	
-	@Override
-	public int compareTo(Object o) {
-		return preco.compareTo(((CD) o).getPreco());
-	}
-	
-	
 
 	@Override
 	public int hashCode() {

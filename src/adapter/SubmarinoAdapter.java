@@ -29,12 +29,8 @@ public class SubmarinoAdapter implements Loja {
 	}
 
 	@Override
-	public Collection procurar(String chave) {
+	public Collection<CD> procurar(String chave) {
 		
-		if (!sP.isConnected()) {
-			conectar("furb", "furb");
-		}
-
 		ArrayList<CD> listaCDs = new ArrayList<CD>();
 		String[][] matriz;
 		try {

@@ -21,7 +21,7 @@ public class SomLivreAdapter extends SomLivreServidor implements Loja{
 	}
 
 	@Override
-	public Collection procurar(String chave) {
+	public Collection<CD> procurar(String chave) {
 		
 		String[] listaCD = buscaCD();  
 		ArrayList<CD> lista = new ArrayList<>();

@@ -5,6 +5,8 @@ import java.io.Serializable;
 
 public class CD implements Serializable{
 
+	private static final long serialVersionUID = 2L;
+	
 	private String titulo;
 	private String artista;
 	private Double preco;

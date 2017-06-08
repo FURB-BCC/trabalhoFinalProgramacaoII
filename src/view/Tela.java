@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -8,13 +10,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
 import facade.PesquisaPrecosFacade;
@@ -23,33 +30,30 @@ import model.CD;
 import model.NomeBandaValorComparator;
 import model.ValorComparator;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.DefaultComboBoxModel;
-
 public class Tela extends JFrame {
-
+	
+	private static final long serialVersionUID = 1L;
 	private javax.swing.JScrollPane jScrollPane;
 	private javax.swing.JTable jTable;
 	private javax.swing.JTextField txtInput;
 	private DefaultTableModel modeloTabela;
 	private PesquisaPrecosFacade pesquisaFacade;
 	private ArrayList<CD> cdsPesquisados;
-	private JComboBox cbPesquisasAnteriores;
-	private Comparator tipoComparacao;
+	private JComboBox<String> cbPesquisasAnteriores;
+	private Comparator<CD> tipoComparacao;
 	
 	public static void main(String[] args) throws Exception {
 		new Tela();
 	}
 
 	private Tela() {
-		pesquisaFacade = new PesquisaPrecosFacade();
 		initComponents();
 		setVisible(true);
 	}
 
 	private void initComponents() {
 
+		pesquisaFacade = new PesquisaPrecosFacade();
 		cdsPesquisados = new ArrayList<>();
 
 		JButton btnPesquisar = new JButton();
@@ -57,19 +61,19 @@ public class Tela extends JFrame {
 			try {
 				pesquisar();
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(null, "Erro! " + e.getMessage());
+				trataExcecao(e);
 			}
 		});
-		txtInput = new javax.swing.JTextField();
-		jScrollPane = new javax.swing.JScrollPane();
-		jTable = new javax.swing.JTable();
+		txtInput = new JTextField();
+		jScrollPane = new JScrollPane();
+		jTable = new JTable();
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		btnPesquisar.setText("Pesquisar");
 
-		jTable.setModel(modeloTabela = new javax.swing.table.DefaultTableModel(new Object[][] {},
-				new String[] { "Titulo", "Banda/Artista", "Pre�o", "Loja" }));
+		jTable.setModel(modeloTabela = new DefaultTableModel(new Object[][] {},
+				new String[] { "Álbum", "Banda/Artista", "Preço", "Loja" }));
 
 		jScrollPane.setViewportView(jTable);
 
@@ -78,23 +82,29 @@ public class Tela extends JFrame {
 			try {
 				salvar();
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(null, "Erro! " + e.getMessage());
+				trataExcecao(e);
 			}
 		});
 
-		cbPesquisasAnteriores = new JComboBox();
+		cbPesquisasAnteriores = new JComboBox<String>();
 
 		JButton btCarregar = new JButton("Carregar");
 		btCarregar.addActionListener(e -> insereDadosNaTabela(cbPesquisasAnteriores.getSelectedItem().toString()));
 		
-		JComboBox cbOrdenacao = new JComboBox();
-		cbOrdenacao.setModel(new DefaultComboBoxModel(new String[] {"Decrescente de valor", "Alfabética pelo nome do álbum e crescente de valor", "Alfabética pelo nome do artista e decrescente de valor"}));
+		JComboBox<String> cbOrdenacao = new JComboBox<String>();
+		
+		cbOrdenacao.setModel(new DefaultComboBoxModel<String>(new String[] 
+							 {"Decrescente de valor", 
+							 "Alfabética pelo nome do álbum e crescente de valor",
+							 "Alfabética pelo nome do artista e decrescente de valor"}));
+		
 		cbOrdenacao.setSelectedIndex(0);
 		cbOrdenacao.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					alteraOrdenacao(cbOrdenacao.getSelectedIndex());
 				} catch (Exception e1) {
+					trataExcecao(e1);
 				}
 			}
 		});
@@ -141,32 +151,37 @@ public class Tela extends JFrame {
 		try {
 			atualizarComboBox();
 		} catch (Exception e1) {
-			//System.out.println(e1.getMessage());
-			JOptionPane.showMessageDialog(null, e1.getMessage());
+			trataExcecao(e1);
 		}
 
+		setResizable(false);
 		pack();
 	}
 
-	protected void alteraOrdenacao(int selectedIndex) throws Exception {
+	private void trataExcecao(Exception e) {
+		if(e.getMessage() != null){
+			JOptionPane.showMessageDialog(this, e.getMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
+		}
+		else{
+			JOptionPane.showMessageDialog(this, "Exceção " + e.getClass().toGenericString() + " foi lançada.", "ERRO", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	protected void alteraOrdenacao(int selectedIndex) throws Exception{
 
 		switch (selectedIndex) {
 		case 0:
 			tipoComparacao = new ValorComparator();
 			break;
-			
 		case 1:
-			//alfabetica pelo nome do album e crescente de valor
 			tipoComparacao = new AlbumValorComparator();
 			break;
-			
 		case 2:
-			//alfabetica pelo nome do artista e decrescente de valor
 			tipoComparacao = new NomeBandaValorComparator();
 			break;
 
 		default:
-			JOptionPane.showMessageDialog(null, "Erro no CB");
+			tipoComparacao = new ValorComparator();
 		}
 		
 		pesquisar();
@@ -174,7 +189,7 @@ public class Tela extends JFrame {
 
 	private void insereDadosNaTabela(String selectedItem) {
 
-		ArrayList<CD> lista = (ArrayList) pesquisaFacade.ler(selectedItem);
+		ArrayList<CD> lista = pesquisaFacade.ler(selectedItem);
 		
 		limpaTable();
 		
@@ -200,9 +215,10 @@ public class Tela extends JFrame {
 			itens.add(cbPesquisasAnteriores.getItemAt(i).toString());
 		}
 		return itens;
-		
 	}
+	
 	private void salvar() throws IOException, ClassNotFoundException {
+		
 		String key = JOptionPane.showInputDialog("Informe a chave de salvamento");
 
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm");
@@ -212,18 +228,16 @@ public class Tela extends JFrame {
 		pesquisaFacade.salvar(key, cdsPesquisados, data);
 
 		atualizarComboBox();
-
 	}
 
 	private void pesquisar() throws Exception {
 		String parametroPesquisa = txtInput.getText();
 		limpaTable();
-		ArrayList retorno = pesquisaFacade.pesquisar(parametroPesquisa);
+		ArrayList<CD> retorno = pesquisaFacade.pesquisar(parametroPesquisa);
 		atualizaTable(retorno);
 	}
 
-	private void atualizaTable(ArrayList retorno) {
-
+	private void atualizaTable(ArrayList<CD> retorno) {
 		
 		Collections.sort(retorno, tipoComparacao ==  null ? new ValorComparator() : tipoComparacao);
 		
@@ -238,8 +252,11 @@ public class Tela extends JFrame {
 	}
 
 	private void insereCDNaTabela(CD cd) {
-		modeloTabela
-				.addRow(new String[] { cd.getTitulo(), cd.getArtista(), String.valueOf(cd.getPreco()), cd.getLoja() });
+		modeloTabela.addRow(new String[] { cd.getTitulo(),
+										   cd.getArtista(),
+										   String.valueOf(cd.getPreco()),
+										   cd.getLoja() 
+									     });
 		cdsPesquisados.add(cd);
 	}
 }

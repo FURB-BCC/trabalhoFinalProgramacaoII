@@ -8,5 +8,5 @@ public interface Loja {
 	
 	public void desconectar();
 	
-	public Collection procurar(String chave);
+	public Collection<CD> procurar(String chave);
 }

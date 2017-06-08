@@ -2,6 +2,8 @@ package model;
 
 public class ConnectionRefusedException extends Exception {
 
+	private static final long serialVersionUID = 3L;
+
 	public ConnectionRefusedException() {
 		super();
 	}

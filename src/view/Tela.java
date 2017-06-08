@@ -88,7 +88,7 @@ public class Tela extends JFrame {
 		btCarregar.addActionListener(e -> insereDadosNaTabela(cbPesquisasAnteriores.getSelectedItem().toString()));
 		
 		JComboBox cbOrdenacao = new JComboBox();
-		cbOrdenacao.setModel(new DefaultComboBoxModel(new String[] {"Descrescente de valor", "Alfabética pelo nome do álbum e crescente de valor", "Alfabética pelo nome do artista e decrescente de valor"}));
+		cbOrdenacao.setModel(new DefaultComboBoxModel(new String[] {"Decrescente de valor", "Alfabética pelo nome do álbum e crescente de valor", "Alfabética pelo nome do artista e decrescente de valor"}));
 		cbOrdenacao.setSelectedIndex(0);
 		cbOrdenacao.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

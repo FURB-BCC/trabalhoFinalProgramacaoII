@@ -14,7 +14,7 @@ public class NomeBandaValorComparator implements Comparator<CD>{
         if (comparacaoNomeAlbum != 0) {
            return comparacaoNomeAlbum;
         } else {
-        	return new ValorComparator().compare(c2, c1);
+        	return new ValorComparator().compare(c1, c2);
         }
 	}
 }

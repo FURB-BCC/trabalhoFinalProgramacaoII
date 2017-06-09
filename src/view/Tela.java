@@ -73,7 +73,7 @@ public class Tela extends JFrame {
 		btnPesquisar.setText("Pesquisar");
 
 		jTable.setModel(modeloTabela = new DefaultTableModel(new Object[][] {},
-				new String[] { "Álbum", "Banda/Artista", "Preço", "Loja" }));
+				new String[] { "Album", "Banda/Artista", "Preço", "Loja" }));
 
 		jScrollPane.setViewportView(jTable);
 
@@ -89,13 +89,13 @@ public class Tela extends JFrame {
 		cbPesquisasAnteriores = new JComboBox<String>();
 
 		JButton btCarregar = new JButton("Carregar");
-		btCarregar.addActionListener(e -> insereDadosNaTabela(cbPesquisasAnteriores.getSelectedItem().toString()));
+		btCarregar.addActionListener(e -> insereDadosNaTabela(cbPesquisasAnteriores.getSelectedItem() == null ? "" : cbPesquisasAnteriores.getSelectedItem().toString()));
 		
 		JComboBox<String> cbOrdenacao = new JComboBox<String>();
 		
 		cbOrdenacao.setModel(new DefaultComboBoxModel<String>(new String[] 
 							 {"Decrescente de valor", 
-							 "Alfabética pelo nome do álbum e crescente de valor",
+							 "Alfabética pelo nome do Album e crescente de valor",
 							 "Alfabética pelo nome do artista e decrescente de valor"}));
 		
 		cbOrdenacao.setSelectedIndex(0);
@@ -190,6 +190,9 @@ public class Tela extends JFrame {
 	private void insereDadosNaTabela(String selectedItem) {
 
 		ArrayList<CD> lista = pesquisaFacade.ler(selectedItem);
+		
+		if(lista == null)
+			return;
 		
 		limpaTable();
 		

@@ -66,7 +66,13 @@ public class Tela extends JFrame {
 		});
 		txtInput = new JTextField();
 		jScrollPane = new JScrollPane();
-		jTable = new JTable();
+		jTable = new JTable(){
+			
+			private static final long serialVersionUID = 1L;
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+		};
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 

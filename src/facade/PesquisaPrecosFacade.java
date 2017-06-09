@@ -17,7 +17,7 @@ public class PesquisaPrecosFacade {
 
 	private ArrayList<CD> resultados;
 	private final String PASTA_BASE = "C:\\Temp\\TrabalhoFinalProgramacaoII\\";
-
+	private final String ERROR_MESSAGE = "Erro na hora de se conectar ao servidor ";
 	public ArrayList<CD> pesquisar(String chave) throws Exception {
 
 		resultados = new ArrayList<>();
@@ -27,7 +27,7 @@ public class PesquisaPrecosFacade {
 		if (somLivreAdapter.conectar("furb", "furb")) {
 			resultados.addAll(somLivreAdapter.procurar(chave));
 		} else {
-			throw new ConnectionRefusedException();
+			throw new ConnectionRefusedException(ERROR_MESSAGE + "SomLivre.");
 		}
 
 		somLivreAdapter.desconectar();
@@ -35,7 +35,7 @@ public class PesquisaPrecosFacade {
 		if (submarinoAdapter.conectar("furb", "furb")) {
 			resultados.addAll(submarinoAdapter.procurar(chave));
 		} else {
-			throw new ConnectionRefusedException();
+			throw new ConnectionRefusedException(ERROR_MESSAGE + "Submarino.");
 		}
 
 		submarinoAdapter.desconectar();

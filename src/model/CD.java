@@ -3,7 +3,7 @@ package model;
 import java.io.Serializable;
 
 
-public class CD implements Serializable{
+public class CD implements Serializable, Comparable{
 
 	private static final long serialVersionUID = 2L;
 	
@@ -62,9 +62,14 @@ public class CD implements Serializable{
 		int result = 1;
 		result = prime * result + ((artista == null) ? 0 : artista.hashCode());
 		result = prime * result + ((loja == null) ? 0 : loja.hashCode());
-		result = prime * result + ((preco == null) ? 0 : preco.hashCode());
 		result = prime * result + ((titulo == null) ? 0 : titulo.hashCode());
+		
 		return result;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		return this.preco.compareTo(((CD) o).getPreco());
 	}
 
 	@Override
@@ -85,11 +90,6 @@ public class CD implements Serializable{
 			if (other.loja != null)
 				return false;
 		} else if (!loja.equals(other.loja))
-			return false;
-		if (preco == null) {
-			if (other.preco != null)
-				return false;
-		} else if (!preco.equals(other.preco))
 			return false;
 		if (titulo == null) {
 			if (other.titulo != null)

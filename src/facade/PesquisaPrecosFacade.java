@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import adapter.SomLivreAdapter;
 import adapter.SubmarinoAdapter;
@@ -18,9 +19,9 @@ public class PesquisaPrecosFacade {
 	private ArrayList<CD> resultados;
 	private final String PASTA_BASE = "C:\\Temp\\TrabalhoFinalProgramacaoII\\";
 	private final String ERROR_MESSAGE = "Erro na hora de se conectar ao servidor ";
-	public ArrayList<CD> pesquisar(String chave) throws Exception {
+	public List<CD> pesquisar(String chave) throws Exception {
 
-		resultados = new ArrayList<>();
+		resultados = new ArrayList<CD>();
 		SubmarinoAdapter submarinoAdapter = new SubmarinoAdapter();
 		SomLivreAdapter somLivreAdapter = new SomLivreAdapter();
 
@@ -43,14 +44,14 @@ public class PesquisaPrecosFacade {
 		return resultados;
 	}
 
-	public void salvar(String key, ArrayList<CD> cdsPesquisados, String data)
+	public void salvar(String key, List<CD> cdsPesquisados, String data)
 			throws IOException, ClassNotFoundException {
 
 		File base = new File(PASTA_BASE);
 		if (!base.exists()) {
 			base.mkdirs();
 		}
-		File file = new File(PASTA_BASE + key + data + ".txt");
+		File file = new File(PASTA_BASE + key + "-" + data + ".txt");
 
 		ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(file));
 		output.writeObject(cdsPesquisados);

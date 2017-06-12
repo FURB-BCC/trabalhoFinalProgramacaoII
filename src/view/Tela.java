@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
@@ -9,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -38,7 +40,7 @@ public class Tela extends JFrame {
 	private javax.swing.JTextField txtInput;
 	private DefaultTableModel modeloTabela;
 	private PesquisaPrecosFacade pesquisaFacade;
-	private ArrayList<CD> cdsPesquisados;
+	private List<CD> cdsPesquisados;
 	private JComboBox<String> cbPesquisasAnteriores;
 	private Comparator<CD> tipoComparacao;
 	
@@ -98,11 +100,9 @@ public class Tela extends JFrame {
 		btCarregar.addActionListener(e -> insereDadosNaTabela(cbPesquisasAnteriores.getSelectedItem() == null ? "" : cbPesquisasAnteriores.getSelectedItem().toString()));
 		
 		JComboBox<String> cbOrdenacao = new JComboBox<String>();
+		cbOrdenacao.setCursor(Cursor.getPredefinedCursor(Cursor.SW_RESIZE_CURSOR));
 		
-		cbOrdenacao.setModel(new DefaultComboBoxModel<String>(new String[] 
-							 {"Decrescente de valor", 
-							 "Alfabética pelo nome do Album e crescente de valor",
-							 "Alfabética pelo nome do artista e decrescente de valor"}));
+		cbOrdenacao.setModel(new DefaultComboBoxModel(new String[] {"-- Selecione uma ordenação", "Decrescente de valor", "Alfabética pelo nome do Album e crescente de valor", "Alfabética pelo nome do artista e decrescente de valor"}));
 		
 		cbOrdenacao.setSelectedIndex(0);
 		cbOrdenacao.addActionListener(new ActionListener() {
@@ -176,21 +176,21 @@ public class Tela extends JFrame {
 	protected void alteraOrdenacao(int selectedIndex) throws Exception{
 
 		switch (selectedIndex) {
-		case 0:
+		case 1:
 			tipoComparacao = new ValorComparator();
 			break;
-		case 1:
+		case 2:
 			tipoComparacao = new AlbumValorComparator();
 			break;
-		case 2:
+		case 3:
 			tipoComparacao = new NomeBandaValorComparator();
 			break;
 
 		default:
-			tipoComparacao = new ValorComparator();
+			tipoComparacao = null;
 		}
 		
-		pesquisar();
+		atualizaTable(cdsPesquisados);
 	}
 
 	private void insereDadosNaTabela(String selectedItem) {
@@ -228,7 +228,7 @@ public class Tela extends JFrame {
 	
 	private void salvar() throws IOException, ClassNotFoundException {
 		
-		String key = JOptionPane.showInputDialog("Informe a chave de salvamento");
+		String key = txtInput.getText();
 
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm");
 		LocalDateTime now = LocalDateTime.now();
@@ -241,14 +241,14 @@ public class Tela extends JFrame {
 
 	private void pesquisar() throws Exception {
 		String parametroPesquisa = txtInput.getText();
-		limpaTable();
-		ArrayList<CD> retorno = pesquisaFacade.pesquisar(parametroPesquisa);
-		atualizaTable(retorno);
+		cdsPesquisados =  pesquisaFacade.pesquisar(parametroPesquisa);
+		atualizaTable(cdsPesquisados);
 	}
 
-	private void atualizaTable(ArrayList<CD> retorno) {
+	private void atualizaTable(List<CD> retorno) {
 		
-		Collections.sort(retorno, tipoComparacao ==  null ? new ValorComparator() : tipoComparacao);
+		limpaTable();
+		Collections.sort(retorno, tipoComparacao);
 		
 		for (Object object : retorno) {
 			CD cd = (CD) object;
@@ -263,9 +263,9 @@ public class Tela extends JFrame {
 	private void insereCDNaTabela(CD cd) {
 		modeloTabela.addRow(new String[] { cd.getTitulo(),
 										   cd.getArtista(),
-										   String.valueOf(cd.getPreco()),
+										   "R$ " + String.valueOf(cd.getPreco()),
 										   cd.getLoja() 
 									     });
-		cdsPesquisados.add(cd);
+		
 	}
 }

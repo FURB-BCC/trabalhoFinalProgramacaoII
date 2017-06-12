@@ -1,10 +1,12 @@
 package adapter;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import conexao.SomLivreServidor;
+import controller.FiltraLista;
 import model.CD;
 import model.Loja;
 
@@ -24,28 +26,16 @@ public class SomLivreAdapter extends SomLivreServidor implements Loja{
 	public Collection<CD> procurar(String chave) {
 		
 		String[] listaCD = buscaCD();  
-		ArrayList<CD> lista = new ArrayList<>();
+		HashSet<CD> lista = new HashSet<>();
 
 		for (String string : listaCD) {
 			String[] content = string.split("\\|");
 			lista.add(new CD(content[1], content[0], Double.parseDouble(content[2]), "SomLivre"));
 		}
 		
-		Set<String> artistas = lista.stream()
-								    .map(CD::getArtista)
-								    .filter(a -> a.toLowerCase().contains(chave.toLowerCase()))
-								    .collect(Collectors.toSet());
-		
-		Set<String> albuns = lista.stream()
-								  .map(CD::getTitulo)
-								  .filter(a -> a.toLowerCase().contains(chave.toLowerCase()))
-								  .collect(Collectors.toSet());
-		
-		return lista.stream()
-					.filter(c -> artistas.contains(c.getArtista()) | albuns.contains(c.getTitulo()))
-					.collect(Collectors.toList());
-							     
-		
+		return FiltraLista.getUniqueinstance().filtraLista(chave, lista);
 	}
+
+
 
 }

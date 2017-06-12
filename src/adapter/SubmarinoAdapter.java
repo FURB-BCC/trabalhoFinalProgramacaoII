@@ -1,10 +1,11 @@
 package adapter;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import controller.FiltraLista;
 import didatico.SubmarinoProducts;
 import model.CD;
 import model.Loja;
@@ -31,7 +32,7 @@ public class SubmarinoAdapter implements Loja {
 	@Override
 	public Collection<CD> procurar(String chave) {
 		
-		ArrayList<CD> listaCDs = new ArrayList<CD>();
+		HashSet<CD> listaCDs = new HashSet<CD>();
 		String[][] matriz;
 		try {
 			matriz = sP.getCDProducts();
@@ -48,21 +49,7 @@ public class SubmarinoAdapter implements Loja {
 			values[3] = aMatriz[3];
 			listaCDs.add(new CD(values[0], values[2], Double.parseDouble(values[3]), "Submarino"));
 		}
-		
-		Set<String> artistas = listaCDs.stream()
-									    .map(CD::getArtista)
-									    .filter(a -> a.toLowerCase().contains(chave.toLowerCase()))
-									    .collect(Collectors.toSet());
-
-		Set<String> albuns = listaCDs.stream()
-									  .map(CD::getTitulo)
-									  .filter(a -> a.toLowerCase().contains(chave.toLowerCase()))
-									  .collect(Collectors.toSet());
-
-		return listaCDs.stream()
-						.filter(c -> artistas.contains(c.getArtista()) | albuns.contains(c.getTitulo()))
-						.collect(Collectors.toList());
-
+		return FiltraLista.getUniqueinstance().filtraLista(chave, listaCDs);
 	}
 
 }
